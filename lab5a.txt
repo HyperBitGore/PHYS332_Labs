@@ -1,0 +1,37 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 10/22/2025 11:31:05 AM
+// Design Name: 
+// Module Name: lab5a
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module lab5a(
+input [1:0] SW,
+input BTNC,
+output [1:0] LED,
+output LED16_B,
+output LED16_G,
+output LED16_R
+    );
+    assign LED[0] = ~SW[0];
+    assign LED[1] = SW[1];
+    
+    assign LED16_B = BTNC;
+    assign LED16_G = 1'b1;
+    assign LED16_R = SW[0] & SW[1];
+endmodule

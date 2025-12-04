@@ -1,0 +1,43 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 11/12/2025 11:40:05 AM
+// Design Name: 
+// Module Name: lab6
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module lab6(
+    input [7:0] SW,
+    output [7:0] LED
+    );
+    wire c1, c2, c3, c4;
+    wire a1, a2, a3, a4;
+    add1bit first(SW[0], SW[4], 1'b0, a1, c1);
+    add1bit second(SW[1], SW[5], c1, a2, c2);
+    add1bit third(SW[2], SW[6], c2, a3, c3);
+    add1bit fourth(SW[3], SW[7], c3, a4, c4);
+    assign LED[0] = a1;
+    assign LED[1] = a2;
+    assign LED[2] = a3;
+    assign LED[3] = a4;
+    assign LED[5] = c4;
+endmodule
+module add1bit (input a, input b, input cin, output s, output cout);
+    assign cout = (a & b) | (b & cin) | (a & cin);
+    assign s = (a & b & cin) | (a & (~b) & (~cin)) | ((~a) & b & (~cin)) | ((~a) & (~b) & cin);
+endmodule
+

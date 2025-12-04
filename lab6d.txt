@@ -1,0 +1,114 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 11/12/2025 11:40:05 AM
+// Design Name: 
+// Module Name: lab6
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module lab6(
+    input CLK100MHZ,
+    input [7:0] SW,
+    output [7:0] LED,
+    output CA,
+    output CB,
+    output CC,
+    output CD,
+    output CE,
+    output CF,
+    output CG,
+    output [7:0] AN
+    );
+    add4bit fourbit(SW[3:0], SW[7:4], LED[3:0], LED[4]);
+    segment7display firstdisplay(CLK100MHZ, LED[4:0], AN[7:0], CA, CB, CC, CD, CE, CF, CG);
+endmodule
+
+module add1bit (input a, input b, input cin, output s, output cout);
+    assign cout = (a & b) | (b & cin) | (a & cin);
+    assign s = (a & b & cin) | (a & (~b) & (~cin)) | ((~a) & b & (~cin)) | ((~a) & (~b) & cin);
+endmodule
+
+module add4bit (input[3:0] SW1, input[3:0] SW2, output[3:0] s, output cout);
+    wire c1, c2, c3;
+    add1bit first(SW1[0], SW2[0], 1'b0, s[0], c1);
+    add1bit second(SW1[1], SW2[1], c1, s[1], c2);
+    add1bit third(SW1[2], SW2[2], c2, s[2], c3);
+    add1bit fourth(SW1[3], SW2[3], c3, s[3], cout);
+    
+endmodule
+
+module segment7display (
+input clk,
+input[4:0] SW,
+output reg [7:0] AN,
+output reg CA, 
+output reg CB,
+output reg CC,
+output reg CD,
+output reg CE,
+output reg CF,
+output reg CG
+);
+    reg [15:0] cnt = 0;
+    always @(posedge clk) begin
+        cnt <= cnt + 1;
+    end
+    wire dig_sel = cnt[15];
+     always @(*) begin
+        if (dig_sel == 1'b0) begin
+            AN = 8'b1111_1110;
+        end else begin
+            AN = 8'b1111_1101;
+        end
+    end
+    reg[4:0] real_val;
+    always@(*) begin
+        if (dig_sel == 1'b0) begin
+            real_val = SW;
+            if (SW >= 5'hA && SW < 5'h14) begin
+                real_val = SW - 5'hA;
+            end else if (SW >= 5'h14 && SW < 5'h1E) begin
+                real_val = SW - 5'h14;
+            end else if (SW >= 5'h1E) begin
+                real_val = SW - 5'h1E;
+            end
+            case (real_val)
+                5'h0: {CA, CB, CC, CD, CE, CF, CG} = 7'b0000001;
+                5'h1: {CA, CB, CC, CD, CE, CF, CG} = 7'b1001111;
+                5'h2: {CA, CB, CC, CD, CE, CF, CG} = 7'b0010010;
+                5'h3: {CA, CB, CC, CD, CE, CF, CG} = 7'b0000110;
+                5'h4: {CA, CB, CC, CD, CE, CF, CG} = 7'b1001100;
+                5'h5: {CA, CB, CC, CD, CE, CF, CG} = 7'b0100100;
+                5'h6: {CA, CB, CC, CD, CE, CF, CG} = 7'b0100000;
+                5'h7: {CA, CB, CC, CD, CE, CF, CG} = 7'b0001111;
+                5'h8: {CA, CB, CC, CD, CE, CF, CG} = 7'b0000000;
+                5'h9: {CA, CB, CC, CD, CE, CF, CG} = 7'b0000100;
+                default: {CA, CB, CC, CD, CE, CF, CG} = 7'b1111111;
+            endcase
+        end else begin
+            if (SW >= 5'hA && SW < 5'h14) begin
+                {CA, CB, CC, CD, CE, CF, CG} = 7'b1001111;
+            end else if (SW >= 5'h14 && SW < 5'h1E) begin
+                {CA, CB, CC, CD, CE, CF, CG} = 7'b0010010;
+            end else if (SW >= 5'h1E) begin
+                {CA, CB, CC, CD, CE, CF, CG} = 7'b0000110;
+            end else begin
+                {CA, CB, CC, CD, CE, CF, CG} = 7'b1111111;
+            end
+        end
+    end
+endmodule

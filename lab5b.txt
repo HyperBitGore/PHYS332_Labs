@@ -1,0 +1,42 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 10/23/2025 11:32:49 AM
+// Design Name: 
+// Module Name: lab5b
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module lab5a(
+    input [3:0] SW,
+    output [2:0] LED
+    );
+    wire e, f, g;
+    wire a1, a0, b1, b0;
+    assign a0 = SW[0];
+    assign a1 = SW[1];
+    assign b0 = SW[2];
+    assign b1 = SW[3];
+    
+    assign e = (a1 & a0 & b1 & b0) | (a1 & (~a0) & b1 & (~b0)) | ((~a1) & (~a0) & (~b1) & (~b0)) | ((~a1) & a0 & (~b1) & b0);
+    assign f = (a1 & ~a0 & ~b1) | (a1 & a0 & ~(b1 & b0)) | (~a1 & a0 & ~b1 & ~b0);
+    assign g = (~a1 & ~a0 & (b1 | b0)) | (a1 & ~a0 & b1 & b0) | (~a1 & a0 & b1);
+    
+    assign LED[0] = e;
+    assign LED[1] = f;
+    assign LED[2] = g;
+    
+endmodule
